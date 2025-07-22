@@ -1,0 +1,1 @@
+DROP TRIGGER IF EXISTS tgr_employee_audit_insert;

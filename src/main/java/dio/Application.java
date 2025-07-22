@@ -1,12 +1,13 @@
 package dio;
 
 import dio.persistence.EmployeeDAO;
+
 import dio.persistence.entity.EmployeeEntity;
 import org.flywaydb.core.Flyway;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.List;
+
 
 public class Application {
 
@@ -17,21 +18,28 @@ public class Application {
 	private final static EmployeeDAO employeeDAO = new EmployeeDAO();
 
 	public static void main(String[] args) {
-		Flyway flyway = Flyway.configure()
-				.dataSource(DB_URL, DB_USERNAME, DB_PASSWORD)
-				.load();
-
+		Flyway flyway = Flyway.configure().dataSource(DB_URL, DB_USERNAME, DB_PASSWORD).load();
 		flyway.migrate();
 
-		EmployeeEntity employee = new EmployeeEntity();
-		employee.setId(2);
-		employee.setName("Hudson");
-		employee.setSalary(new BigDecimal("1412"));
-		employee.setBirthday(OffsetDateTime.now().minusYears(21).minusDays(73));
+		EmployeeEntity employeeInsert = new EmployeeEntity();
+		employeeInsert.setName("Pedro");
+		employeeInsert.setSalary(new BigDecimal("1412"));
+		employeeInsert.setBirthday(OffsetDateTime.now().minusYears(2));
+		employeeDAO.insert(employeeInsert);
 
-		employeeDAO.update(employee);
+		employeeDAO.findAll().forEach(System.out::println);
 
-		// employeeDAO.delete(3);
+		System.out.println(employeeDAO.findById(1));
+
+		EmployeeEntity employeeUpdate = new EmployeeEntity();
+		employeeUpdate.setId(2);
+		employeeUpdate.setName("Maria");
+		employeeUpdate.setBirthday(OffsetDateTime.now().minusYears(32));
+		employeeUpdate.setSalary(new BigDecimal("6000"));
+		employeeDAO.update(employeeUpdate);
+
+		employeeDAO.delete(1);
+
 	}
 
 }

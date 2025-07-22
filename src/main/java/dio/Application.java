@@ -1,7 +1,11 @@
 package dio;
 
 import dio.persistence.EmployeeDAO;
+import dio.persistence.entity.EmployeeEntity;
 import org.flywaydb.core.Flyway;
+
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 
 public class Application {
 
@@ -17,6 +21,17 @@ public class Application {
 				.load();
 
 		flyway.migrate();
+
+		EmployeeEntity employee= new EmployeeEntity();
+		employee.setName("Rogerio");
+		employee.setSalary(new BigDecimal("4100"));
+		employee.setBirthday(OffsetDateTime.now().minusYears(23));
+
+		System.out.println(employee);
+
+		employeeDAO.insert(employee);
+
+		System.out.println(employee);
 	}
 
 }

@@ -1,7 +1,6 @@
 package dio.persistence;
 
 import dio.persistence.entity.EmployeeAuditEntity;
-import dio.persistence.entity.EmployeeEntity;
 import dio.persistence.entity.OperationEnum;
 
 import java.sql.Connection;
@@ -9,10 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 

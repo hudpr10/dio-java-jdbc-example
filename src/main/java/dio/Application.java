@@ -6,6 +6,7 @@ import org.flywaydb.core.Flyway;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 public class Application {
 
@@ -22,16 +23,12 @@ public class Application {
 
 		flyway.migrate();
 
-		EmployeeEntity employee= new EmployeeEntity();
-		employee.setName("Rogerio");
-		employee.setSalary(new BigDecimal("4100"));
-		employee.setBirthday(OffsetDateTime.now().minusYears(23));
+		List<EmployeeEntity> list = employeeDAO.findAll();
+		list.forEach(e -> System.out.println(e.toString()));
 
-		System.out.println(employee);
+		System.out.println();
 
-		employeeDAO.insert(employee);
-
-		System.out.println(employee);
+		System.out.println(employeeDAO.findById(1));
 	}
 
 }

@@ -2,11 +2,17 @@ package dio.persistence;
 
 import dio.persistence.entity.EmployeeEntity;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeDAO {
@@ -35,24 +41,70 @@ public class EmployeeDAO {
     }
 
     public List<EmployeeEntity> findAll() {
+        List<EmployeeEntity> employeeEntityList = new ArrayList<>();
+
         try {
             Connection connection = ConnectionUtil.getConnection();
             Statement statement = connection.createStatement();
 
-            String sql = "SELECT * FROM employees";
+            String sql = "SELECT * FROM employees ORDER BY name";
+            statement.executeQuery(sql);
+            ResultSet result = statement.getResultSet();
 
-            statement.executeUpdate(sql);
+            while(result.next()) {
+                EmployeeEntity employee = new EmployeeEntity();
+                employee.setId(result.getLong("id"));
+                employee.setName(result.getString("name"));
+                employee.setSalary(result.getBigDecimal("salary"));
+
+                OffsetDateTime birthday = convertTimestampToOffsetDateTime(result.getTimestamp("birthday"));
+                employee.setBirthday(birthday);
+
+                employeeEntityList.add(employee);
+            }
+
         } catch(SQLException ex) {
             ex.printStackTrace();
         }
-        return null;
+
+        return employeeEntityList;
     }
 
     public EmployeeEntity findById(final long id) {
-        return null;
+        EmployeeEntity employee = new EmployeeEntity();
+
+        try {
+            Connection connection = ConnectionUtil.getConnection();
+            Statement statement = connection.createStatement();
+
+            String sql = "SELECT * FROM employees WHERE id = " + id;
+            statement.executeQuery(sql);
+
+            ResultSet result = statement.getResultSet();
+
+            if(result.next()) {
+                employee.setId(result.getLong("id"));
+                employee.setName(result.getString("name"));
+                employee.setSalary(result.getBigDecimal("salary"));
+
+                OffsetDateTime birthday = convertTimestampToOffsetDateTime(result.getTimestamp("birthday"));
+                employee.setBirthday(birthday);
+            }
+
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return employee;
     }
 
     private String formatOffsetDateTime(final OffsetDateTime dateTime) {
-        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        OffsetDateTime utcDateTime = dateTime.withOffsetSameInstant(ZoneOffset.UTC);
+        return utcDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    private OffsetDateTime convertTimestampToOffsetDateTime(final Timestamp date) {
+        Instant birthdayInstant = date.toInstant();
+        return OffsetDateTime.ofInstant(birthdayInstant, ZoneOffset.UTC);
     }
 }

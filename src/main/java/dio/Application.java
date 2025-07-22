@@ -1,5 +1,6 @@
 package dio;
 
+import dio.persistence.EmployeeAuditDAO;
 import dio.persistence.EmployeeDAO;
 
 import dio.persistence.entity.EmployeeEntity;
@@ -16,6 +17,7 @@ public class Application {
 	private final static String DB_PASSWORD = System.getenv("DB_PASSWORD");
 
 	private final static EmployeeDAO employeeDAO = new EmployeeDAO();
+	private final static EmployeeAuditDAO employeeAuditDAO = new EmployeeAuditDAO();
 
 	public static void main(String[] args) {
 		Flyway flyway = Flyway.configure().dataSource(DB_URL, DB_USERNAME, DB_PASSWORD).load();
@@ -39,6 +41,8 @@ public class Application {
 		employeeDAO.update(employeeUpdate);*/
 
 		// employeeDAO.delete(1);
+
+		employeeAuditDAO.findAll().forEach(System.out::println);
 
 	}
 

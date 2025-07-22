@@ -133,7 +133,6 @@ public class EmployeeDAO {
     }
 
     private OffsetDateTime convertTimestampToOffsetDateTime(final Timestamp date) {
-        Instant birthdayInstant = date.toInstant();
-        return OffsetDateTime.ofInstant(birthdayInstant, ZoneOffset.UTC);
+        return OffsetDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC);
     }
 }

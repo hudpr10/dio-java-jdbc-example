@@ -24,24 +24,24 @@ public class Application {
 		Flyway flyway = Flyway.configure().dataSource(DB_URL, DB_USERNAME, DB_PASSWORD).load();
 		flyway.migrate();
 
-		EmployeeEntity employeeInsert = new EmployeeEntity();
-		employeeInsert.setName("Monica");
-		employeeInsert.setSalary(new BigDecimal("2400"));
-		employeeInsert.setBirthday(OffsetDateTime.now().minusYears(30));
-		employeeParamDAO.insert(employeeInsert);
-
-		employeeParamDAO.findAll().forEach(System.out::println);
-
-		System.out.println(employeeParamDAO.findById(2));
-
-		EmployeeEntity employeeUpdate = new EmployeeEntity();
-		employeeUpdate.setId(2);
-		employeeUpdate.setName("Hudson");
-		employeeUpdate.setBirthday(OffsetDateTime.now().minusYears(21));
-		employeeUpdate.setSalary(new BigDecimal("1412"));
-		employeeParamDAO.update(employeeUpdate);
-
-		employeeParamDAO.delete(4);
+//		EmployeeEntity employeeInsert = new EmployeeEntity();
+//		employeeInsert.setName("Monica");
+//		employeeInsert.setSalary(new BigDecimal("2400"));
+//		employeeInsert.setBirthday(OffsetDateTime.now().minusYears(30));
+//		employeeParamDAO.insert(employeeInsert);
+//
+//		employeeParamDAO.findAll().forEach(System.out::println);
+//
+//		System.out.println(employeeParamDAO.findById(2));
+//
+//		EmployeeEntity employeeUpdate = new EmployeeEntity();
+//		employeeUpdate.setId(2);
+//		employeeUpdate.setName("Hudson");
+//		employeeUpdate.setBirthday(OffsetDateTime.now().minusYears(21));
+//		employeeUpdate.setSalary(new BigDecimal("1412"));
+//		employeeParamDAO.update(employeeUpdate);
+//
+//		employeeParamDAO.delete(4);
 
 		// employeeAuditDAO.findAll().forEach(System.out::println);
 

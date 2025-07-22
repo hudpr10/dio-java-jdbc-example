@@ -1,8 +1,10 @@
+DROP PROCEDURE IF EXISTS prc_insert_employee;
+
 CREATE PROCEDURE prc_insert_employee(
-    IN p_id BIGINT,
-    OUT p_name VARCHAR(150),
-    OUT p_salary DECIMAL(10, 2),
-    OUT p_birthday TIMESTAMP
+    OUT p_id BIGINT,
+    IN p_name VARCHAR(150),
+    IN p_salary DECIMAL(10, 2),
+    IN p_birthday TIMESTAMP
 )
 
 BEGIN

@@ -24,12 +24,12 @@ public class Application {
 		Flyway flyway = Flyway.configure().dataSource(DB_URL, DB_USERNAME, DB_PASSWORD).load();
 		flyway.migrate();
 
-//		EmployeeEntity employeeInsert = new EmployeeEntity();
-//		employeeInsert.setName("Monica");
-//		employeeInsert.setSalary(new BigDecimal("2400"));
-//		employeeInsert.setBirthday(OffsetDateTime.now().minusYears(30));
-//		employeeParamDAO.insert(employeeInsert);
-//
+		EmployeeEntity employeeInsert = new EmployeeEntity();
+		employeeInsert.setName("Tiago");
+		employeeInsert.setSalary(new BigDecimal("8000"));
+		employeeInsert.setBirthday(OffsetDateTime.now().minusYears(22));
+		employeeParamDAO.insertWithProcedure(employeeInsert);
+
 //		employeeParamDAO.findAll().forEach(System.out::println);
 //
 //		System.out.println(employeeParamDAO.findById(2));

@@ -2,6 +2,7 @@ package dio.persistence;
 
 import dio.persistence.entity.EmployeeEntity;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,18 +15,23 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 public class EmployeeParamDAO {
-    public void insert(final EmployeeEntity employeeEntity) {
+    public void insertWithProcedure(final EmployeeEntity employeeEntity) {
         try {
             Connection connection = ConnectionUtil.getConnection();
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO employees(name, salary, birthday) values(?, ?, ?);");
-            statement.setString(1, employeeEntity.getName());
-            statement.setBigDecimal(2, employeeEntity.getSalary());
-            statement.setTimestamp(3, Timestamp.valueOf(employeeEntity.getBirthday().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()));
+            CallableStatement statement = connection.prepareCall("CALL prc_insert_employee(?, ?, ?, ?);");
 
-            statement.executeUpdate();
+            statement.registerOutParameter(1, TimeZone.LONG);
+            statement.setString(2, employeeEntity.getName());
+            statement.setBigDecimal(3, employeeEntity.getSalary());
+            statement.setTimestamp(4, Timestamp.valueOf(employeeEntity.getBirthday().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()));
+
+            statement.execute();
             System.out.println("Employee inserido.");
+
+            employeeEntity.setId(statement.getLong(1));
 
         } catch(SQLException ex) {
             ex.printStackTrace();

@@ -21,24 +21,24 @@ public class Application {
 		Flyway flyway = Flyway.configure().dataSource(DB_URL, DB_USERNAME, DB_PASSWORD).load();
 		flyway.migrate();
 
-		EmployeeEntity employeeInsert = new EmployeeEntity();
+		/*EmployeeEntity employeeInsert = new EmployeeEntity();
 		employeeInsert.setName("Pedro");
 		employeeInsert.setSalary(new BigDecimal("1412"));
 		employeeInsert.setBirthday(OffsetDateTime.now().minusYears(2));
-		employeeDAO.insert(employeeInsert);
+		employeeDAO.insert(employeeInsert);*/
 
-		employeeDAO.findAll().forEach(System.out::println);
+		//employeeDAO.findAll().forEach(System.out::println);
 
-		System.out.println(employeeDAO.findById(1));
+		//System.out.println(employeeDAO.findById(1));
 
-		EmployeeEntity employeeUpdate = new EmployeeEntity();
+		/*EmployeeEntity employeeUpdate = new EmployeeEntity();
 		employeeUpdate.setId(2);
 		employeeUpdate.setName("Maria");
 		employeeUpdate.setBirthday(OffsetDateTime.now().minusYears(32));
 		employeeUpdate.setSalary(new BigDecimal("6000"));
-		employeeDAO.update(employeeUpdate);
+		employeeDAO.update(employeeUpdate);*/
 
-		employeeDAO.delete(1);
+		// employeeDAO.delete(1);
 
 	}
 

@@ -12,7 +12,6 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -33,6 +32,37 @@ public class EmployeeParamDAO {
 
             employeeEntity.setId(statement.getLong(1));
 
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void insert(final List<EmployeeEntity> employeeEntityList) {
+        try(Connection connection = ConnectionUtil.getConnection()) {
+            String sql = "INSERT INTO employees (name, salary, birthday) VALUES (?, ?, ?);";
+            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+                // O padrão de Commit é TRUE - Caso tiver algum problema na inserção ele poderia dar rollback
+                // Como FALSE o cuidado precisa ser MANUAL
+                connection.setAutoCommit(false);
+
+                for(int i = 0; i < employeeEntityList.size(); i++) {
+                    statement.setString(1, employeeEntityList.get(i).getName());
+                    statement.setBigDecimal(2, employeeEntityList.get(i).getSalary());
+                    statement.setTimestamp(3, Timestamp.valueOf(employeeEntityList.get(i).getBirthday().atZoneSimilarLocal(ZoneOffset.UTC).toLocalDateTime()));
+                    statement.addBatch(); // Adiciona na FILA
+                    if(i % 1000 == 0 || i == employeeEntityList.size() - 1) {
+                        statement.executeBatch(); // Executa o lote
+                    }
+
+                    if(i == 8000) throw new SQLException(); // vai fazer o rollback
+                }
+
+                connection.commit(); // Commit final onde os dados são inseridos
+
+            } catch(SQLException ex) {
+                connection.rollback();
+                ex.printStackTrace();
+            }
         } catch(SQLException ex) {
             ex.printStackTrace();
         }

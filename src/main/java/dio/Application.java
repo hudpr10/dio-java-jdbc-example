@@ -23,12 +23,15 @@ public class Application {
 
 		flyway.migrate();
 
-		List<EmployeeEntity> list = employeeDAO.findAll();
-		list.forEach(e -> System.out.println(e.toString()));
+		EmployeeEntity employee = new EmployeeEntity();
+		employee.setId(2);
+		employee.setName("Hudson");
+		employee.setSalary(new BigDecimal("1412"));
+		employee.setBirthday(OffsetDateTime.now().minusYears(21).minusDays(73));
 
-		System.out.println();
+		employeeDAO.update(employee);
 
-		System.out.println(employeeDAO.findById(1));
+		// employeeDAO.delete(3);
 	}
 
 }

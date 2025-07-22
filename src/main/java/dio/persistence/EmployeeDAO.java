@@ -2,7 +2,6 @@ package dio.persistence;
 
 import dio.persistence.entity.EmployeeEntity;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,7 +23,8 @@ public class EmployeeDAO {
             String sql = "INSERT INTO employees(name, birthday, salary) " +
             "VALUES ('" + employeeEntity.getName() + "', '" + formatOffsetDateTime(employeeEntity.getBirthday()) + "', '" + employeeEntity.getSalary().toString() + "')";
 
-            // System.out.println("Foram afetados: " + statement.getUpdateCount() + " registros na base de dados.");
+            System.out.println("Employee inserido.");
+            System.out.println("Foram afetados: " + statement.getUpdateCount() + " registros na base de dados.");
 
             statement.executeUpdate(sql);
         } catch(SQLException ex) {
@@ -33,11 +33,38 @@ public class EmployeeDAO {
     }
 
     public void update(final EmployeeEntity employeeEntity) {
+        try {
+            Connection connection = ConnectionUtil.getConnection();
+            Statement statement = connection.createStatement();
 
+            String sql = "UPDATE employees " +
+                    "SET " +
+                    "name     = '"+ employeeEntity.getName() + "', " +
+                    "birthday = '" + formatOffsetDateTime(employeeEntity.getBirthday()) + "', " +
+                    "salary   = '" + employeeEntity.getSalary().toString() + "' " +
+                    "WHERE id = " + employeeEntity.getId();
+            statement.executeUpdate(sql);
+            System.out.println("Employee atualizado.");
+            System.out.println("Foram afetados: " + statement.getUpdateCount() + " registros na base de dados.");
+
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void delete(final long id) {
+        try {
+            Connection connection = ConnectionUtil.getConnection();
+            Statement statement = connection.createStatement();
 
+            String sql = "DELETE FROM employees WHERE id = " + id;
+            statement.executeUpdate(sql);
+
+            System.out.println("Employee deletado.");
+            System.out.println("Foram afetados: " + statement.getUpdateCount() + " registros na base de dados.");
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public List<EmployeeEntity> findAll() {
@@ -62,6 +89,7 @@ public class EmployeeDAO {
 
                 employeeEntityList.add(employee);
             }
+            System.out.println("Foram afetados: " + statement.getUpdateCount() + " registros na base de dados.");
 
         } catch(SQLException ex) {
             ex.printStackTrace();
@@ -90,6 +118,7 @@ public class EmployeeDAO {
                 OffsetDateTime birthday = convertTimestampToOffsetDateTime(result.getTimestamp("birthday"));
                 employee.setBirthday(birthday);
             }
+            System.out.println("Foram afetados: " + statement.getUpdateCount() + " registros na base de dados.");
 
         } catch(SQLException ex) {
             ex.printStackTrace();

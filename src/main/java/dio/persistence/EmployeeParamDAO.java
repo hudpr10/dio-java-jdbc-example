@@ -1,5 +1,6 @@
 package dio.persistence;
 
+import dio.persistence.entity.ContactEntity;
 import dio.persistence.entity.EmployeeEntity;
 
 import java.sql.CallableStatement;
@@ -132,25 +133,32 @@ public class EmployeeParamDAO {
 
     public EmployeeEntity findById(final long id) {
         EmployeeEntity employee = new EmployeeEntity();
+        ContactEntity contact = new ContactEntity();
 
         try {
             Connection connection = ConnectionUtil.getConnection();
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM employees WHERE id = ?");
+            String sql = "SELECT e.id AS employee_id, e.name, e.salary, e.birthday, c.id AS contact_id, c.description, c.type " +
+                    "FROM employees e LEFT JOIN contacts c ON e.id = c.employee_id " +
+                    "WHERE e.id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
             statement.setLong(1, id);
 
             statement.executeQuery();
             ResultSet result = statement.getResultSet();
 
             if(result.next()) {
-                employee.setId(result.getLong("id"));
+                employee.setId(result.getLong("employee_id"));
                 employee.setName(result.getString("name"));
                 employee.setSalary(result.getBigDecimal("salary"));
+
+                contact.setId(result.getLong("contact_id"));
+                contact.setDescription(result.getString("description"));
+                contact.setType(result.getString("type"));
+                employee.setContact(contact);
 
                 OffsetDateTime birthday = convertTimestampToOffsetDateTime(result.getTimestamp("birthday"));
                 employee.setBirthday(birthday);
             }
-            System.out.println("Foram afetados: " + statement.getUpdateCount() + " registros na base de dados.");
-
         } catch(SQLException ex) {
             ex.printStackTrace();
         }

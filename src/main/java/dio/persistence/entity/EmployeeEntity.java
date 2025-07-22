@@ -11,8 +11,5 @@ public class EmployeeEntity {
     private String name;
     private OffsetDateTime birthday;
     private BigDecimal salary;
-
-    public String toString() {
-        return String.format("ID: %s | Nome: %s | Aniversario: %s | Salario: %s", getId(), getName(), getBirthday(), getSalary());
-    }
+    private ContactEntity contact;
 }

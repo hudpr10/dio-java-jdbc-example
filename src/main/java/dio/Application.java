@@ -1,9 +1,11 @@
 package dio;
 
+import dio.persistence.ContactDAO;
 import dio.persistence.EmployeeAuditDAO;
 import dio.persistence.EmployeeDAO;
 
 import dio.persistence.EmployeeParamDAO;
+import dio.persistence.entity.ContactEntity;
 import dio.persistence.entity.EmployeeEntity;
 import net.datafaker.Faker;
 import org.flywaydb.core.Flyway;
@@ -27,33 +29,38 @@ public class Application {
 
 	private final static EmployeeParamDAO employeeParamDAO = new EmployeeParamDAO();
 	private final static EmployeeAuditDAO employeeAuditDAO = new EmployeeAuditDAO();
+	private final static ContactDAO contactDAO = new ContactDAO();
 
 	public static void main(String[] args) {
-		Flyway flyway = Flyway.configure().dataSource(DB_URL, DB_USERNAME, DB_PASSWORD).load();
-		flyway.migrate();
+		try {
+			Flyway flyway = Flyway.configure().dataSource(DB_URL, DB_USERNAME, DB_PASSWORD).load();
+			flyway.migrate();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
 
-//		EmployeeEntity employeeInsert = new EmployeeEntity();
-//		employeeInsert.setName("Tiago");
-//		employeeInsert.setSalary(new BigDecimal("8000"));
-//		employeeInsert.setBirthday(OffsetDateTime.now().minusYears(22));
-//		employeeParamDAO.insertWithProcedure(employeeInsert);
+		/*EmployeeEntity employeeInsert = new EmployeeEntity();
+		employeeInsert.setName("Tiago");
+		employeeInsert.setSalary(new BigDecimal("8000"));
+		employeeInsert.setBirthday(OffsetDateTime.now().minusYears(22));
+		employeeParamDAO.insertWithProcedure(employeeInsert);*/
 
-//		employeeParamDAO.findAll().forEach(System.out::println);
-//
-//		System.out.println(employeeParamDAO.findById(2));
-//
-//		EmployeeEntity employeeUpdate = new EmployeeEntity();
-//		employeeUpdate.setId(2);
-//		employeeUpdate.setName("Hudson");
-//		employeeUpdate.setBirthday(OffsetDateTime.now().minusYears(21));
-//		employeeUpdate.setSalary(new BigDecimal("1412"));
-//		employeeParamDAO.update(employeeUpdate);
-//
+		//employeeParamDAO.findAll().forEach(System.out::println);
+
+		//System.out.println(employeeParamDAO.findById(2));
+
+		/*EmployeeEntity employeeUpdate = new EmployeeEntity();
+		employeeUpdate.setId(2);
+		employeeUpdate.setName("Hudson");
+		employeeUpdate.setBirthday(OffsetDateTime.now().minusYears(21));
+		employeeUpdate.setSalary(new BigDecimal("1412"));
+		employeeParamDAO.update(employeeUpdate);*/
+
 		// employeeParamDAO.delete(4);
 
 		// employeeAuditDAO.findAll().forEach(System.out::println);
 
-		List<EmployeeEntity> fakeEmployeeList = Stream.generate(() -> {
+		/*List<EmployeeEntity> fakeEmployeeList = Stream.generate(() -> {
 			EmployeeEntity employee = new EmployeeEntity();
 			employee.setName(faker.name().fullName());
 			employee.setSalary(new BigDecimal(faker.number().digits(4)));
@@ -61,7 +68,22 @@ public class Application {
 			return employee;
 		}).limit(10000).toList();
 
-		employeeParamDAO.insert(fakeEmployeeList);
+		employeeParamDAO.insert(fakeEmployeeList);*/
+
+		/*ContactEntity contact = new ContactEntity();
+		EmployeeEntity employee = new EmployeeEntity();
+		contact.setDescription("lucas@mail.com");
+		contact.setType("e-mail");
+
+		employee.setName("Hudson");
+		employee.setSalary(new BigDecimal("2000"));
+		employee.setBirthday(OffsetDateTime.now().minusYears(21));
+		contact.setEmployee(employee);
+
+		employeeParamDAO.insertWithProcedure(employee);
+		contactDAO.insert(contact);*/
+
+		System.out.println(employeeParamDAO.findById(37365));
 	}
 
 }

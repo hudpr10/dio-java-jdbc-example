@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.TimeZone;
 
 public class EmployeeParamDAO {
+    private final ContactDAO contactDAO = new ContactDAO();
+
     public void insertWithProcedure(final EmployeeEntity employeeEntity) {
         try {
             Connection connection = ConnectionUtil.getConnection();
@@ -108,18 +110,16 @@ public class EmployeeParamDAO {
             Connection connection = ConnectionUtil.getConnection();
             Statement statement = connection.createStatement();
 
-            String sql = "SELECT * FROM employees ORDER BY name";
-            statement.executeQuery(sql);
-            ResultSet result = statement.getResultSet();
+            statement.executeQuery("SELECT * FROM employees ORDER BY name");
 
+            ResultSet result = statement.getResultSet();
             while(result.next()) {
                 EmployeeEntity employee = new EmployeeEntity();
                 employee.setId(result.getLong("id"));
                 employee.setName(result.getString("name"));
                 employee.setSalary(result.getBigDecimal("salary"));
-
-                OffsetDateTime birthday = convertTimestampToOffsetDateTime(result.getTimestamp("birthday"));
-                employee.setBirthday(birthday);
+                employee.setBirthday(convertTimestampToOffsetDateTime(result.getTimestamp("birthday")));
+                employee.setContactList(contactDAO.findByEmployeeId(employee.getId()));
 
                 employeeEntityList.add(employee);
             }
@@ -133,7 +133,7 @@ public class EmployeeParamDAO {
 
     public EmployeeEntity findById(final long id) {
         EmployeeEntity employee = new EmployeeEntity();
-        ContactEntity contact = new ContactEntity();
+        List<ContactEntity> contactList = new ArrayList<>();
 
         try {
             Connection connection = ConnectionUtil.getConnection();
@@ -150,14 +150,17 @@ public class EmployeeParamDAO {
                 employee.setId(result.getLong("employee_id"));
                 employee.setName(result.getString("name"));
                 employee.setSalary(result.getBigDecimal("salary"));
+                employee.setBirthday(convertTimestampToOffsetDateTime(result.getTimestamp("birthday")));
 
-                contact.setId(result.getLong("contact_id"));
-                contact.setDescription(result.getString("description"));
-                contact.setType(result.getString("type"));
-                employee.setContact(contact);
+                do {
+                    ContactEntity contact = new ContactEntity();
+                    contact.setId(result.getLong("contact_id"));
+                    contact.setDescription(result.getString("description"));
+                    contact.setType(result.getString("type"));
+                    contactList.add(contact);
+                } while(result.next());
 
-                OffsetDateTime birthday = convertTimestampToOffsetDateTime(result.getTimestamp("birthday"));
-                employee.setBirthday(birthday);
+                employee.setContactList(contactList);
             }
         } catch(SQLException ex) {
             ex.printStackTrace();

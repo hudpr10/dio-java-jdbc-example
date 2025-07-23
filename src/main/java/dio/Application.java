@@ -70,20 +70,26 @@ public class Application {
 
 		employeeParamDAO.insert(fakeEmployeeList);*/
 
-		/*ContactEntity contact = new ContactEntity();
-		EmployeeEntity employee = new EmployeeEntity();
-		contact.setDescription("lucas@mail.com");
-		contact.setType("e-mail");
-
-		employee.setName("Hudson");
-		employee.setSalary(new BigDecimal("2000"));
+		/*EmployeeEntity employee = new EmployeeEntity();
+		employee.setName("Maria");
+		employee.setSalary(new BigDecimal("4000"));
 		employee.setBirthday(OffsetDateTime.now().minusYears(21));
-		contact.setEmployee(employee);
-
 		employeeParamDAO.insertWithProcedure(employee);
-		contactDAO.insert(contact);*/
 
-		System.out.println(employeeParamDAO.findById(37365));
+		ContactEntity contact1 = new ContactEntity();
+		contact1.setDescription("maria@mail.com");
+		contact1.setType("e-mail");
+		contact1.setEmployeeId(employee.getId());
+		contactDAO.insert(contact1);*/
+
+		/*ContactEntity contact2 = new ContactEntity();
+		contact2.setDescription("(00) 91122-3344");
+		contact2.setType("phone");
+		contact2.setEmployeeId(employee.getId());
+		contactDAO.insert(contact2);*/
+
+		// System.out.println(employeeParamDAO.findById(1));
+		employeeParamDAO.findAll().forEach(System.out::println);
 	}
 
 }

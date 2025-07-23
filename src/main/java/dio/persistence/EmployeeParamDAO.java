@@ -2,6 +2,7 @@ package dio.persistence;
 
 import dio.persistence.entity.ContactEntity;
 import dio.persistence.entity.EmployeeEntity;
+import dio.persistence.entity.ModuleEntity;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -19,6 +20,7 @@ import java.util.TimeZone;
 
 public class EmployeeParamDAO {
     private final ContactDAO contactDAO = new ContactDAO();
+    private final AccessDAO accessDAO = new AccessDAO();
 
     public void insertWithProcedure(final EmployeeEntity employeeEntity) {
         try {
@@ -30,10 +32,15 @@ public class EmployeeParamDAO {
             statement.setBigDecimal(3, employeeEntity.getSalary());
             statement.setTimestamp(4, Timestamp.valueOf(employeeEntity.getBirthday().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()));
 
-            statement.execute();
-            System.out.println("Employee inserido.");
+            statement.executeUpdate();
 
             employeeEntity.setId(statement.getLong(1));
+            employeeEntity.getModuleList()
+                    .stream()
+                    .map(ModuleEntity::getId)
+                    .forEach(m -> accessDAO.insert(employeeEntity.getId(), m));
+
+            System.out.println("Employee inserido.");
 
         } catch(SQLException ex) {
             ex.printStackTrace();

@@ -5,8 +5,10 @@ import dio.persistence.EmployeeAuditDAO;
 import dio.persistence.EmployeeDAO;
 
 import dio.persistence.EmployeeParamDAO;
+import dio.persistence.ModuleDAO;
 import dio.persistence.entity.ContactEntity;
 import dio.persistence.entity.EmployeeEntity;
+import dio.persistence.entity.ModuleEntity;
 import net.datafaker.Faker;
 import org.flywaydb.core.Flyway;
 
@@ -14,6 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
@@ -30,6 +33,7 @@ public class Application {
 	private final static EmployeeParamDAO employeeParamDAO = new EmployeeParamDAO();
 	private final static EmployeeAuditDAO employeeAuditDAO = new EmployeeAuditDAO();
 	private final static ContactDAO contactDAO = new ContactDAO();
+	private final static ModuleDAO moduleDAO = new ModuleDAO();
 
 	public static void main(String[] args) {
 		try {
@@ -65,10 +69,20 @@ public class Application {
 			employee.setName(faker.name().fullName());
 			employee.setSalary(new BigDecimal(faker.number().digits(4)));
 			employee.setBirthday(OffsetDateTime.of(faker.date().birthdayLocalDate(18, 50), LocalTime.MIN, ZoneOffset.UTC));
-			return employee;
-		}).limit(10000).toList();
 
-		employeeParamDAO.insert(fakeEmployeeList);*/
+			List<ModuleEntity> moduleList = new ArrayList<>();
+			int moduleAmount = faker.number().numberBetween(1, 4);
+			for(int i = 0; i < moduleAmount; i++) {
+				ModuleEntity module = new ModuleEntity();
+				module.setId(i + 1);
+				moduleList.add(module);
+			}
+			employee.setModuleList(moduleList);
+
+			return employee;
+		}).limit(3).toList();
+
+		fakeEmployeeList.forEach(employeeParamDAO::insertWithProcedure);*/
 
 		/*EmployeeEntity employee = new EmployeeEntity();
 		employee.setName("Maria");
@@ -89,7 +103,9 @@ public class Application {
 		contactDAO.insert(contact2);*/
 
 		// System.out.println(employeeParamDAO.findById(1));
-		employeeParamDAO.findAll().forEach(System.out::println);
+		//employeeParamDAO.findAll().forEach(System.out::println);
+
+		moduleDAO.findAll().forEach(System.out::println);
 	}
 
 }

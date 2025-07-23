@@ -105,7 +105,7 @@ public class Application {
 		// System.out.println(employeeParamDAO.findById(1));
 		//employeeParamDAO.findAll().forEach(System.out::println);
 
-		moduleDAO.findAll().forEach(System.out::println);
+		//moduleDAO.findAll().forEach(System.out::println);
 	}
 
 }
